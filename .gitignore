@@ -1,0 +1,11 @@
+.build/
+build/
+.DS_Store
+.swiftpm/
+.claude/
+Package.resolved
+CLAUDE.md
+
+# The design bundle is a design *input*, not app source. It has never been published and
+# must not be: it is only untracked by luck, and one `git add -A` would ship it.
+docs/Redesign/

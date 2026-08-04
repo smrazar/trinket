@@ -1,0 +1,190 @@
+{
+  "app": {
+    "slug": "trinket",
+    "display": "trinket",
+    "summary": "Offline file conversion, compression and metadata scrubbing",
+    "accent": "#0075D7",
+    "tagline": "Smaller, and safe to send",
+    "headline": [
+      "Your photos know",
+      "where you live."
+    ],
+    "lede": "Shrink files, change their format, and strip what they carry — GPS, camera serial, the thumbnail of the uncropped original. Shown to you first, then removed. No file ever leaves your Mac.",
+    "meta": "macOS 15+ · Apple silicon · free & open source",
+    "nav": [
+      {
+        "label": "The plan",
+        "href": "#features"
+      },
+      {
+        "label": "Formats",
+        "href": "#capabilities"
+      },
+      {
+        "label": "Install",
+        "href": "#install"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/smrazar/trinket"
+      }
+    ],
+    "cta": [
+      {
+        "label": "Install",
+        "href": "#install"
+      },
+      {
+        "label": "Watch it work",
+        "href": "img/trinket-demo.mp4"
+      },
+      {
+        "label": "View source",
+        "href": "https://github.com/smrazar/trinket"
+      }
+    ],
+    "marquee": [
+      "JPEG",
+      "HEIC",
+      "PNG",
+      "TIFF",
+      "RAW",
+      "PDF",
+      "MP4",
+      "HEVC",
+      "WEBM",
+      "MP3",
+      "AAC",
+      "FLAC",
+      "OPUS",
+      "ZIP",
+      "7Z",
+      "TAR",
+      "GPS",
+      "EXIF"
+    ],
+    "features": [
+      {
+        "step": "01 / Drop it",
+        "title": "The app proposes a plan.",
+        "body": "Files land and trinket reads them, works out what it would do, and shows the whole path at once — open the archive, shrink the photos, convert the video, pack it back up. Every decision already answered. Change what you like, press one button.",
+        "shot": "shots/plan.jpg"
+      },
+      {
+        "step": "02 / See what it carries",
+        "title": "A scrub nobody can verify is just a promise.",
+        "body": "Photos carry more than they look like they carry: coordinates, the camera's serial, the software, sometimes the machine that edited them. A cropped photo can keep a thumbnail of the uncropped original — so cropping someone out and sharing it leaks them anyway. trinket shows what it found, on a map, before removing anything.",
+        "shot": "shots/scrub.jpg"
+      },
+      {
+        "step": "03 / A different verb",
+        "title": "\"I zipped my photos and it got bigger.\"",
+        "body": "Because JPEG, MP4 and PDF have no redundancy left. Zipping them adds container overhead — 145.3 MB came out at 146.7 MB, slowly. Compressing harder only makes it slower. So trinket opens the archive, re-encodes what is inside, and packs it back up. Same photos: 73.8 MB.",
+        "shot": "shots/archive.png"
+      },
+      {
+        "step": "04 / Never a bar that lies",
+        "title": "It tells you what it could not do.",
+        "body": "A file trinket cannot improve is named and marked, never given a progress bar that never moves. A batch that saved nothing says so rather than printing 0%. macOS re-injects a producer name into every PDF it writes, so the strongest scrub cannot fully clean one — and the app says that where you choose it.",
+        "shot": "shots/done.jpg"
+      }
+    ],
+    "capabilities": {
+      "step": "Formats",
+      "title": "What it handles.",
+      "items": [
+        {
+          "name": "Photos",
+          "sub": "reads 62 · writes JPEG HEIC PNG TIFF"
+        },
+        {
+          "name": "RAW",
+          "sub": ".cr2 .nef .arw .dng"
+        },
+        {
+          "name": "Documents",
+          "sub": ".pdf, rebuilt page by page"
+        },
+        {
+          "name": "Video",
+          "sub": "H.264 · HEVC · VP9"
+        },
+        {
+          "name": "Audio",
+          "sub": "AAC MP3 FLAC ALAC WAV AIFF"
+        },
+        {
+          "name": "Open audio",
+          "sub": "Opus · Ogg Vorbis"
+        },
+        {
+          "name": "Archives",
+          "sub": ".zip .tar .7z .xz .bz2"
+        },
+        {
+          "name": "Scrub",
+          "sub": "GPS · serial · history · thumbnails"
+        },
+        {
+          "name": "Renaming",
+          "sub": "find/replace · regex · templates"
+        }
+      ]
+    },
+    "install": {
+      "step": "Install",
+      "title": "Three lines.",
+      "commands": [
+        "git clone https://github.com/smrazar/trinket.git",
+        "cd trinket",
+        "./install.sh"
+      ],
+      "note": "Builds with the Swift toolchain from the Command Line Tools. No Xcode. The app is ad-hoc signed, so a downloaded build is blocked by Gatekeeper unless you clear it by hand — building from the clone avoids that entirely. Bundles ffmpeg, which is why trinket is GPL-3."
+    },
+    "colophon": "© 2026 · written in Swift, by one guy"
+  },
+  "shelf": [
+    {
+      "slug": "trinket",
+      "name": "trinket",
+      "blurb": "shrink, convert, scrub",
+      "version": "v1.1",
+      "url": "https://smrazar.github.io/trinket/"
+    },
+    {
+      "slug": "loupe",
+      "name": "loupe",
+      "blurb": "quick look for pro files",
+      "version": "v0.1",
+      "url": "https://smrazar.github.io/loupe/"
+    },
+    {
+      "slug": "markpad",
+      "name": "markpad",
+      "blurb": "markdown editor + quick look",
+      "version": "v1.8",
+      "url": "https://smrazar.github.io/markpad/"
+    },
+    {
+      "slug": "stow",
+      "name": "stow",
+      "blurb": "menu bar in three zones",
+      "version": "v3.8.0",
+      "url": "https://smrazar.github.io/stow/"
+    },
+    {
+      "slug": "senti",
+      "name": "senti",
+      "blurb": "mirror android over usb",
+      "version": "v1.5",
+      "url": "https://smrazar.github.io/senti/"
+    },
+    {
+      "slug": "hexad",
+      "name": "hexad",
+      "blurb": "window switcher",
+      "version": "v0.6.2",
+      "url": "https://smrazar.github.io/hexad/"
+    }
+  ]
+}

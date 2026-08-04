@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>trinket — Offline file conversion, compression and metadata scrubbing</title>
+<meta name="description" content="Shrink files, change their format, and strip what they carry — GPS, camera serial, the thumbnail of the uncropped original. Shown to you first, then removed. No file ever leaves your Mac.">
+<meta property="og:title" content="trinket">
+<meta property="og:description" content="Shrink files, change their format, and strip what they carry — GPS, camera serial, the thumbnail of the uncropped original. Shown to you first, then removed. No file ever leaves your Mac.">
+<meta property="og:image" content="icon.png">
+<meta name="theme-color" content="#0075D7">
+<link rel="icon" href="icon.png">
+<style>
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-400.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-500.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-mono-600.woff2) format('woff2')}
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/space-grotesk-400.woff2) format('woff2')}
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/space-grotesk-500.woff2) format('woff2')}
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/space-grotesk-600.woff2) format('woff2')}
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/space-grotesk-700.woff2) format('woff2')}
+
+*{box-sizing:border-box}
+body{margin:0;background:#ffffff;font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.75}
+.mono{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+.inner{max-width:1080px;margin:0 auto;padding:0 40px}
+
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glow{0%,100%{opacity:.35}50%{opacity:.8}}
+
+/* --- hero --- */
+.hero{position:relative;overflow:hidden;background:#0d0f11;padding:26px 0 96px}
+.hero-glow{position:absolute;inset:-30% -10% auto;height:560px;
+  background:radial-gradient(50% 60% at 50% 0%,#0075D747,transparent 70%);opacity:.5}
+.hero-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(80% 70% at 50% 20%,#000,transparent);
+  -webkit-mask-image:radial-gradient(80% 70% at 50% 20%,#000,transparent)}
+.hero .inner{position:relative}
+nav{display:flex;align-items:center;justify-content:space-between;padding-bottom:78px}
+.wordmark{font-size:17px;font-weight:700;letter-spacing:-.02em;color:#f2f5f8}
+nav .links{display:flex;gap:26px;font-size:14px;color:#96a0aa}
+.hero-body{display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px}
+.app-icon{width:104px;height:104px;filter:drop-shadow(0 18px 50px #0075D766)}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#0075D7}
+h1{margin:0;font-size:68px;line-height:1.02;letter-spacing:-.04em;color:#f2f5f8;
+  max-width:760px;text-wrap:balance}
+.lede{margin:0;font-size:19px;line-height:1.55;color:#96a0aa;max-width:560px;
+  text-wrap:pretty}
+.cta{display:flex;gap:12px;padding-top:10px;flex-wrap:wrap;justify-content:center}
+.button{background:linear-gradient(#0083F1,#0065B9);color:#ffffff;
+  padding:15px 28px;border-radius:8px;font-size:15px;font-weight:600;
+  box-shadow:0 12px 30px -10px #0075D7b3}
+.button.ghost{background:none;border:1px solid rgba(255,255,255,.18);color:#dfe6ec;box-shadow:none}
+.meta{font-size:11px;color:#6b7681;letter-spacing:.06em}
+
+/* --- marquee --- */
+.strip{overflow:hidden;background:#0a0c0e;padding:13px 0}
+.strip .track{display:flex;gap:36px;width:max-content;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#55606b}
+
+/* --- feature rows --- */
+.row{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center;padding:88px 0}
+.row.flip{grid-template-columns:1.1fr 1fr}
+.row.flip .copy{order:2}
+.row.flip .art{order:1}
+.copy{display:flex;flex-direction:column;gap:15px}
+.copy .step{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0075D7}
+.copy h2{margin:0;font-size:36px;line-height:1.12;letter-spacing:-.03em;color:#11151a}
+.copy p{margin:0;font-size:16px;line-height:1.65;color:#545d66;text-wrap:pretty}
+.art img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #e2e0dc}
+.art.placeholder{aspect-ratio:16/10;border-radius:12px;border:1px solid #e2e0dc;
+  background:repeating-linear-gradient(135deg,#eef0f2,#eef0f2 8px,#f6f7f8 8px,#f6f7f8 16px);
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:#99a1a9}
+
+/* --- capability grid --- */
+.band{background:#f7f8f9;border-top:1px solid #e2e0dc;border-bottom:1px solid #e2e0dc;
+  padding:78px 0}
+.band .head{text-align:center;margin-bottom:38px}
+.band .head h2{margin:6px 0 0;font-size:34px;letter-spacing:-.03em;color:#11151a}
+.band .head .step{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0075D7}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:12px}
+.tile{background:#fff;border:1px solid #e2e0dc;border-radius:10px;padding:16px 18px}
+.tile .t{font-size:14px;font-weight:600;color:#11151a}
+.tile .s{font-size:12px;color:#8a939c;margin-top:3px}
+
+/* --- install --- */
+.install{padding:82px 0}
+.install .head{text-align:center;margin-bottom:30px}
+.install .head h2{margin:6px 0 0;font-size:34px;letter-spacing:-.03em;color:#11151a}
+.install .head .step{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0075D7}
+pre{margin:0 auto;max-width:640px;background:#0d0f11;color:#dfe6ec;border-radius:12px;
+  padding:22px 24px;font-size:13.5px;line-height:1.8;overflow-x:auto}
+pre .p{color:#0075D7}
+.note{max-width:640px;margin:18px auto 0;text-align:center;font-size:13px;color:#8a939c}
+
+/* --- footer --- */
+footer{background:#0d0f11;padding:56px 0 40px}
+footer .label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5f6a75;
+  margin-bottom:18px}
+.shelf{display:flex;flex-direction:column;font-size:14px}
+.shelf a,.shelf .self{display:grid;grid-template-columns:26px 130px 1fr 90px;gap:16px;
+  align-items:center;padding:14px 0;border-top:1px solid rgba(255,255,255,.1)}
+.shelf .last{border-bottom:1px solid rgba(255,255,255,.1)}
+.shelf img{width:24px;height:24px;border-radius:6px;display:block}
+.shelf .n{font-weight:600;color:#eef2f6}
+.shelf .d{color:#8b959f}
+.shelf .v{color:#5f6a75;text-align:right}
+.shelf .self{opacity:.45}
+.colophon{display:flex;justify-content:space-between;align-items:center;margin-top:26px;
+  font-size:11px;color:#5f6a75;gap:16px;flex-wrap:wrap}
+
+@media (max-width:820px){
+  .inner{padding:0 24px}
+  h1{font-size:44px}
+  .row,.row.flip{grid-template-columns:1fr;gap:28px;padding:56px 0}
+  .row.flip .copy,.row.flip .art{order:initial}
+  nav{padding-bottom:48px}
+  nav .links{gap:16px;font-size:13px}
+  .shelf a,.shelf .self{grid-template-columns:26px 1fr auto;gap:12px}
+  .shelf .d{display:none}
+}
+/* Motion is decorative only — nothing here is what makes content visible.
+   The template faded the hero copy in with `animation: rise ... both`, which means the words only
+   exist once the animation has run. Anything that does not run it renders a hero with no words in
+   it: a reduced-motion preference, a headless renderer, a browser that throttles background tabs.
+   A staggered fade is not worth a page that can come up empty, so the copy is simply drawn. */
+@media (prefers-reduced-motion:no-preference){
+  .app-icon{animation:float 5s ease-in-out infinite}
+  .hero-glow{animation:glow 6s ease-in-out infinite}
+  .strip .track{animation:marq 26s linear infinite}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="inner">
+    <nav>
+      <span class="wordmark">trinket</span>
+      <div class="links mono"><a href="#features">The plan</a><a href="#capabilities">Formats</a><a href="#install">Install</a><a href="https://github.com/smrazar/trinket">GitHub</a></div>
+    </nav>
+    <div class="hero-body">
+      <img class="app-icon" src="icon.png" alt="trinket icon" width="104" height="104">
+      <div class="eyebrow mono">Smaller, and safe to send</div>
+      <h1>Your photos know<br>where you live.</h1>
+      <p class="lede">Shrink files, change their format, and strip what they carry — GPS, camera serial, the thumbnail of the uncropped original. Shown to you first, then removed. No file ever leaves your Mac.</p>
+      <div class="cta"><a class="button" href="#install">Install</a><a class="button ghost" href="img/trinket-demo.mp4">Watch it work</a><a class="button ghost" href="https://github.com/smrazar/trinket">View source</a></div>
+      <div class="meta mono">macOS 15+ · Apple silicon · free &amp; open source</div>
+    </div>
+  </div>
+</header>
+<div class="strip"><div class="track mono"><span>JPEG</span><span>HEIC</span><span>PNG</span><span>TIFF</span><span>RAW</span><span>PDF</span><span>MP4</span><span>HEVC</span><span>WEBM</span><span>MP3</span><span>AAC</span><span>FLAC</span><span>OPUS</span><span>ZIP</span><span>7Z</span><span>TAR</span><span>GPS</span><span>EXIF</span><span>JPEG</span><span>HEIC</span><span>PNG</span><span>TIFF</span><span>RAW</span><span>PDF</span><span>MP4</span><span>HEVC</span><span>WEBM</span><span>MP3</span><span>AAC</span><span>FLAC</span><span>OPUS</span><span>ZIP</span><span>7Z</span><span>TAR</span><span>GPS</span><span>EXIF</span></div></div>
+<section id="features"><div class="inner"><div class="row"><div class="copy"><div class="step mono">01 / Drop it</div><h2>The app proposes a plan.</h2><p>Files land and trinket reads them, works out what it would do, and shows the whole path at once — open the archive, shrink the photos, convert the video, pack it back up. Every decision already answered. Change what you like, press one button.</p></div><div class="art"><img src="shots/plan.jpg" alt="" loading="lazy"></div></div><div class="row flip"><div class="art"><img src="shots/scrub.jpg" alt="" loading="lazy"></div><div class="copy"><div class="step mono">02 / See what it carries</div><h2>A scrub nobody can verify is just a promise.</h2><p>Photos carry more than they look like they carry: coordinates, the camera&#x27;s serial, the software, sometimes the machine that edited them. A cropped photo can keep a thumbnail of the uncropped original — so cropping someone out and sharing it leaks them anyway. trinket shows what it found, on a map, before removing anything.</p></div></div><div class="row"><div class="copy"><div class="step mono">03 / A different verb</div><h2>&quot;I zipped my photos and it got bigger.&quot;</h2><p>Because JPEG, MP4 and PDF have no redundancy left. Zipping them adds container overhead — 145.3 MB came out at 146.7 MB, slowly. Compressing harder only makes it slower. So trinket opens the archive, re-encodes what is inside, and packs it back up. Same photos: 73.8 MB.</p></div><div class="art"><img src="shots/archive.png" alt="" loading="lazy"></div></div><div class="row flip"><div class="art"><img src="shots/done.jpg" alt="" loading="lazy"></div><div class="copy"><div class="step mono">04 / Never a bar that lies</div><h2>It tells you what it could not do.</h2><p>A file trinket cannot improve is named and marked, never given a progress bar that never moves. A batch that saved nothing says so rather than printing 0%. macOS re-injects a producer name into every PDF it writes, so the strongest scrub cannot fully clean one — and the app says that where you choose it.</p></div></div></div></section>
+<section class="band" id="capabilities"><div class="inner">
+  <div class="head"><div class="step mono">Formats</div><h2>What it handles.</h2></div>
+  <div class="tiles"><div class="tile"><div class="t">Photos</div><div class="s mono">reads 62 · writes JPEG HEIC PNG TIFF</div></div><div class="tile"><div class="t">RAW</div><div class="s mono">.cr2 .nef .arw .dng</div></div><div class="tile"><div class="t">Documents</div><div class="s mono">.pdf, rebuilt page by page</div></div><div class="tile"><div class="t">Video</div><div class="s mono">H.264 · HEVC · VP9</div></div><div class="tile"><div class="t">Audio</div><div class="s mono">AAC MP3 FLAC ALAC WAV AIFF</div></div><div class="tile"><div class="t">Open audio</div><div class="s mono">Opus · Ogg Vorbis</div></div><div class="tile"><div class="t">Archives</div><div class="s mono">.zip .tar .7z .xz .bz2</div></div><div class="tile"><div class="t">Scrub</div><div class="s mono">GPS · serial · history · thumbnails</div></div><div class="tile"><div class="t">Renaming</div><div class="s mono">find/replace · regex · templates</div></div></div>
+</div></section>
+<section class="install" id="install"><div class="inner">
+  <div class="head"><div class="step mono">Install</div><h2>Three lines.</h2></div>
+  <pre class="mono"><span class="p">$</span> git clone https://github.com/smrazar/trinket.git
+<span class="p">$</span> cd trinket
+<span class="p">$</span> ./install.sh</pre><p class="note">Builds with the Swift toolchain from the Command Line Tools. No Xcode. The app is ad-hoc signed, so a downloaded build is blocked by Gatekeeper unless you clear it by hand — building from the clone avoids that entirely. Bundles ffmpeg, which is why trinket is GPL-3.</p>
+</div></section>
+<footer><div class="inner">
+  <div class="label mono">The rest of the shelf</div>
+  <div class="shelf mono"><div class="self"><img src="apps/trinket.png" alt=""><span class="n">trinket</span><span class="d">shrink, convert, scrub</span><span class="v mono">v1.1</span></div><a class="" href="https://smrazar.github.io/loupe/"><img src="apps/loupe.png" alt=""><span class="n">loupe</span><span class="d">quick look for pro files</span><span class="v mono">v0.1</span></a><a class="" href="https://smrazar.github.io/markpad/"><img src="apps/markpad.png" alt=""><span class="n">markpad</span><span class="d">markdown editor + quick look</span><span class="v mono">v1.8</span></a><a class="" href="https://smrazar.github.io/stow/"><img src="apps/stow.png" alt=""><span class="n">stow</span><span class="d">menu bar in three zones</span><span class="v mono">v3.8.0</span></a><a class="" href="https://smrazar.github.io/senti/"><img src="apps/senti.png" alt=""><span class="n">senti</span><span class="d">mirror android over usb</span><span class="v mono">v1.5</span></a><a class="last" href="https://smrazar.github.io/hexad/"><img src="apps/hexad.png" alt=""><span class="n">hexad</span><span class="d">window switcher</span><span class="v mono">v0.6.2</span></a></div>
+  <div class="colophon mono">
+    <span>© 2026 · written in Swift, by one guy</span>
+    <a href="https://github.com/smrazar">github.com/smrazar &#8599;</a>
+  </div>
+</div></footer>
+</body>
+</html>
