@@ -67,25 +67,31 @@
         "shot": "img/trinket-demo.mp4"
       },
       {
-        "step": "02 / Drop it",
+        "step": "02 / Nothing to set up",
+        "title": "It already knows what you probably want.",
+        "body": "Smaller, a friendlier format, and safe to send — the three things anyone actually wants from a file. trinket ships with defaults that deliver all three, so the common case needs no configuration at all. Every control is still there when you want it, one click into the plan.",
+        "shot": "shots/welcome.jpg"
+      },
+      {
+        "step": "03 / Drop it",
         "title": "The app proposes a plan.",
         "body": "Files land and trinket reads them, works out what it would do, and shows the whole path at once — open the archive, shrink the photos, convert the video, pack it back up. Every decision already answered. Change what you like, press one button.",
         "shot": "shots/plan.jpg"
       },
       {
-        "step": "03 / See what it carries",
+        "step": "04 / See what it carries",
         "title": "A scrub nobody can verify is just a promise.",
         "body": "Photos carry more than they look like they carry: coordinates, the camera's serial, the software, sometimes the machine that edited them. A cropped photo can keep a thumbnail of the uncropped original — so cropping someone out and sharing it leaks them anyway. trinket shows what it found, on a map, before removing anything.",
         "shot": "shots/scrub.jpg"
       },
       {
-        "step": "04 / A different verb",
+        "step": "05 / A different verb",
         "title": "\"I zipped my photos and it got bigger.\"",
         "body": "Because JPEG, MP4 and PDF have no redundancy left. Zipping them adds container overhead — 145.3 MB came out at 146.7 MB, slowly. Compressing harder only makes it slower. So trinket opens the archive, re-encodes what is inside, and packs it back up. Same photos: 73.8 MB.",
         "shot": "shots/archive.png"
       },
       {
-        "step": "05 / Never a bar that lies",
+        "step": "06 / Never a bar that lies",
         "title": "It tells you what it could not do.",
         "body": "A file trinket cannot improve is named and marked, never given a progress bar that never moves. A batch that saved nothing says so rather than printing 0%. macOS re-injects a producer name into every PDF it writes, so the strongest scrub cannot fully clean one — and the app says that where you choose it.",
         "shot": "shots/done.jpg"
