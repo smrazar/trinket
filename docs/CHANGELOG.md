@@ -36,7 +36,16 @@ real, and every screenshot on the public site replaced.
   see `docs/shots-README.md` — and `docs/BUGS.md` records the incident and the rule that prevents
   a third one.
 - **A one-minute demo video**, `docs/img/trinket-demo.mp4`: a mixed archive opened, planned,
-  renamed and run. 878 KB, metadata stripped.
+  renamed and run. 878 KB, metadata stripped. It **plays on the page** — `make-site.py` renders a
+  `<video>` when a feature's `shot` is a video, with a poster picked up from a sibling image. The
+  README carries the same clip as a GIF, because GitHub does not embed a player for a video
+  committed to a repository; all three documented forms were tested and every one renders a link.
+- **Seven feature rows**, up from four: the clip, first launch, the plan, a before/after at
+  7.7 MB against 132.1 KB, the metadata inspector, an archive round trip, and the payoff banner.
+  The About window sits under the app icon in the README.
+- **trinket is in the footer shelf of all five sibling sites.** The shelf lists the whole family and
+  is duplicated per repo, so a new app means editing all of them; trinket's own page linked out to
+  everything and nothing linked back.
 
 ### Checks
 

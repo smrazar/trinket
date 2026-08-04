@@ -1,6 +1,6 @@
 # trinket — status
 
-*Updated 2026-08-04. Version 1.1. Branch `main`.*
+*Updated 2026-08-04. Version 1.1, published. Branch `main`.*
 
 **Read this first.** It is the handoff: what exists, what is proven, what is merely written, and
 what is left. Anything claimed here as verified has either a runnable assertion behind it or a
@@ -56,6 +56,10 @@ round trip from drop to repacked zip.
 **Written but never seen on screen:** the batch-wide scrub report sheet, the analysing state, and
 the Documents / Log settings tabs. These compile and their logic is checked; **their appearance is
 unproven.**
+
+The About window, the welcome screen and the compare sheet are all on the public site or in the
+README now, which means they are verified by the strongest available test: somebody looked at them
+long enough to publish them.
 
 **Not built at all:** the floating drop target and floating result card (`floating-drop.html`,
 `floating-result.html` in the design bundle). The `floatingResults` preference exists and is

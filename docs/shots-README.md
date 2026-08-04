@@ -1,16 +1,25 @@
 # Screenshots for the Pages site
 
-`Tools/site.json` names four feature shots. Replace a file in place and
+`Tools/site.json` names the feature rows in order. Replace a file in place and
 `python3 Tools/make-site.py` picks it up — nothing else to edit.
 
-| File | What it shows |
-|---|---|
-| `plan.jpg` | A drop of photos, a document, a video and an archive, with the plan sidebar showing a lane per kind and a real "Est. … smaller" figure. The screen that explains the whole app. |
-| `scrub.jpg` | The metadata inspector: GPS with the map, the camera serial, and "Thumbnail of uncropped original", all tagged REMOVE. The most persuasive thing the app can show. |
-| `archive.png` | A finished archive run — Unpack ticked, the photos and the video inside converted, Bundle naming the zip that came back out. |
-| `done.jpg` | The payoff banner with per-file percentages, including the honest small ones (1%, 2%) that prove the number is measured rather than advertised. |
+| File | Row | What it shows |
+|---|---|---|
+| `img/trinket-demo.mp4` | 01 | The hero clip. A `.mp4` in a feature's `shot` renders a `<video>` rather than an `<img>`; `img/trinket-demo.jpg` beside it is picked up automatically as the poster. |
+| `welcome.jpg` | 02 | First launch: the three promises, and the fact that the common case needs no configuration. |
+| `plan.jpg` | 03 | A drop of photos, a document, a video and an archive, with the plan sidebar showing a lane per kind and a real "Est. … smaller" figure. The screen that explains the whole app. |
+| `compare.jpg` | 04 | Before and after side by side — 7.7 MB against 132.1 KB, and no visible difference. Answers the first objection to "it will be smaller". |
+| `scrub.jpg` | 05 | The metadata inspector: GPS with the map, the camera serial, and "Thumbnail of uncropped original", all tagged REMOVE. The most persuasive thing the app can show. |
+| `archive.png` | 06 | A finished archive run — Unpack ticked, the photos and the video inside converted, Bundle naming the zip that came back out. |
+| `done.jpg` | 07 | The payoff banner with per-file percentages, including the honest small ones (1%, 2%) that prove the number is measured rather than advertised. |
 
-`docs/img/trinket-demo.mp4` is the hero video, linked from the "Watch it work" CTA.
+`about.png` is not a site row — it sits under the app icon at the top of `README.md`.
+
+`docs/img/trinket-demo.gif` is the README's copy of the clip: 3× speed, 640px, 10fps, 1.9 MB.
+**GitHub will not embed a player for a video committed to the repository** — a `<video>` element is
+stripped by the sanitizer, and a bare URL or image syntax renders a plain link. All three forms were
+tested against GitHub's markdown API. Inline playback is reserved for assets on GitHub's attachment
+CDN, so the README gets a GIF and the site gets the mp4.
 
 ---
 
@@ -24,6 +33,27 @@ bytes and will call an image clean while a filename sits in it in 24pt type.
 So: **every file in a shot is generated for the shot.** Nothing personal, nothing from a client,
 nobody's face, no real coordinates. Rebuild the fixtures with the steps below, and read every
 filename visible in the frame before committing an image.
+
+**Two shots break that rule on purpose, at the owner's explicit call**, and it is worth saying which
+so nobody "fixes" them later or assumes the rule was forgotten:
+
+- `about.png` shows **Version 1.0** while the current release is 1.1. Retaking it is a minute's
+  work; it was published as-is deliberately.
+- `compare.jpg` uses a real photograph with a **date stamp burned into the pixels** and a filename
+  naming the place it was taken. Both were pointed out and approved before it went up.
+
+Everything else on the site is synthetic. When a shot needs a real photograph, the safe version is
+below: keep the picture, replace the metadata.
+
+**Screenshots of the app itself still need cleaning.** A macOS screen capture carries
+`UserComment = Screenshot`, a DPI block and a Display P3 profile. Crop to the window, flatten to
+sRGB *before* dropping the profile — the numbers survive a profile strip and their meaning does
+not — and rewrite with a fresh properties dictionary:
+
+```swift
+// crop → draw into an sRGB CGContext → CGImageDestinationAddImage(dest, flat, [:])
+// The empty dictionary is the point: nothing unenumerated rides along. Same rule as the app.
+```
 
 ### The fixtures
 

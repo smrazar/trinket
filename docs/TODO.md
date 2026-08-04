@@ -49,8 +49,8 @@ before building it.
       has no dedicated check.
 - [ ] That `application(_:open:)` exists at all is not pinned by an assertion — deleting the method
       would fail nothing. The inbox behind it is checked.
-- [ ] The `shelf` version for trinket is `v1.1` in this repo's `Tools/site.json`. The same array
-      lives in every sibling app's `site.json` and they all still say `v1.0`.
+- [ ] `docs/shots/about.png` shows Version 1.0 and the release is 1.1. Published as-is on purpose;
+      retaking it is a minute's work whenever the About window is next open.
 
 ---
 
