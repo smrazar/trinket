@@ -38,15 +38,13 @@ scrub removes them whether you look at the map or not.
 
 ## Watch it work
 
-<video src="https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.mp4"
-       poster="https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.jpg"
-       controls muted loop playsinline width="820"></video>
+![An archive dropped into trinket, planned, renamed and run](docs/img/trinket-demo.gif)
 
-A mixed archive opened, planned, renamed and run — one minute, no narration, nothing sped up.
+A mixed archive — photos, a document and a video — opened, planned, renamed and run. Three times
+actual speed, no cuts.
 
-<sup>If your Markdown viewer will not play it inline:
-[download the clip](https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.mp4) ·
-[watch it on the site](https://smrazar.github.io/trinket/#features)</sup>
+<sup>[The full clip at full speed and full resolution](https://smrazar.github.io/trinket/#features),
+on the site. GitHub only plays video it hosts itself, so this one is a GIF.</sup>
 
 ---
 
