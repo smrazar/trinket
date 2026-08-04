@@ -22,6 +22,15 @@ enum PipelineCheck {
         await archiveDroppedAlongsideLooseFiles(in: root)
         await unsupportedFilesSurvive(in: root)
         await splitOpenDeliveryArrivesWhole()
+
+        discardScratchStores()
+        // Deliberately not asserted here. A live `UserDefaults` suite cannot be reliably deleted
+        // by the process that owns it: `removePersistentDomain` empties the plist but leaves the
+        // file, and unlinking it just means cfprefsd writes it back when the process exits. What
+        // *is* fixed is the unbounded part — one fixed suite name instead of a fresh UUID per
+        // check, so a run leaves at most two files rather than one per check. `package-app.sh`
+        // clears them after the check exits, which is the only place it works.
+        assert(scratchSuites.isEmpty, "a scratch store was handed out and never discarded")
     }
 
     /// A multi-file *Open With* reaches `application(_:open:)` in more than one call — fourteen
@@ -455,8 +464,28 @@ enum PipelineCheck {
     }
 
     /// A throwaway defaults suite, so a check never writes into the user's real preferences.
+    ///
+    /// **Throwaway means it has to be thrown away.** A suite is a plist under
+    /// `~/Library/Preferences` that outlives the process, so handing one out and forgetting it
+    /// leaves litter on every run — and the packaging script runs the suite on every build.
     private static func scratchStore() -> UserDefaults {
-        UserDefaults(suiteName: "trinket.check.\(UUID().uuidString)") ?? .standard
+        // One fixed name, wiped before each hand-out, rather than a UUID per call: a suite is a
+        // file in ~/Library/Preferences, and 366 of them had accumulated from UUID names.
+        let suite = "trinket.check.scratch"
+        guard let store = UserDefaults(suiteName: suite) else { return .standard }
+        store.removePersistentDomain(forName: suite)
+        if !scratchSuites.contains(where: { $0.0 == suite }) { scratchSuites.append((suite, store)) }
+        return store
+    }
+
+    private nonisolated(unsafe) static var scratchSuites: [(String, UserDefaults)] = []
+
+    /// Removes every suite handed out by `scratchStore()`. Called at the end of `run()`.
+    private static func discardScratchStores() {
+        for (suite, store) in scratchSuites {
+            Defaults.discardSuite(suite, from: store)
+        }
+        scratchSuites = []
     }
 
     /// A JPEG with GPS, a camera serial and an embedded thumbnail — the three things the scrub

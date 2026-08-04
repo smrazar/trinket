@@ -28,6 +28,12 @@ echo "==> Running self-checks"
 # A check the build ignores is a check that stops being true. The build fails on a failure.
 ".build/release/${BINARY_NAME}" --self-check
 
+# The checks use `UserDefaults(suiteName:)`, and a suite is a plist under ~/Library/Preferences
+# that the owning process cannot always delete — unlinking a live one just means cfprefsd writes it
+# back on exit. Clearing here, after the check process is gone, is the belt to that braces. 366 of
+# these had accumulated before anybody looked in there.
+rm -f "$HOME/Library/Preferences/trinket.check."*.plist "$HOME/Library/Preferences/trinket.probe.plist" 2>/dev/null || true
+
 echo "==> Assembling ${APP}"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"

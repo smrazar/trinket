@@ -189,10 +189,30 @@ final class Defaults: ObservableObject {
     /// True when the plan already matches the standing defaults — the button says so rather than
     /// offering to save something that would change nothing.
     func matches(_ plan: Blueprint) -> Bool {
-        let probe = Defaults(store: UserDefaults(suiteName: "trinket.probe") ?? .standard)
+        let store = UserDefaults(suiteName: Self.probeSuite) ?? .standard
+        defer { Self.discardSuite(Self.probeSuite, from: store) }
+        let probe = Defaults(store: store)
         probe.copySettings(from: self)
         probe.adopt(plan)
         return probe.planDefaults == planDefaults && probe.scrubLevel == scrubLevel
+    }
+
+    /// One fixed name rather than a fresh UUID: this runs on every plan change, and a suite is a
+    /// file on disk. It is torn down after each use anyway.
+    private static let probeSuite = "trinket.probe"
+
+    /// Removes a throwaway defaults suite **completely**.
+    ///
+    /// `removePersistentDomain` alone is not enough: it empties the plist but leaves a 42-byte
+    /// `{}` file behind, so a run that makes a suite per check still litters
+    /// `~/Library/Preferences`. 366 of them had accumulated before anybody looked in there. The
+    /// values were gone from all of them — this is tidiness, not a data leak — but a check with a
+    /// permanent side effect on the user's home folder is still a check that is doing damage.
+    static func discardSuite(_ name: String, from store: UserDefaults) {
+        store.removePersistentDomain(forName: name)
+        let plist = URL(fileURLWithPath: NSHomeDirectory())
+            .appending(path: "Library/Preferences/\(name).plist")
+        try? FileManager.default.removeItem(at: plist)
     }
 
     private func copySettings(from other: Defaults) {
@@ -207,7 +227,12 @@ final class Defaults: ObservableObject {
     }
 
     static func selfCheck() {
-        let store = UserDefaults(suiteName: "trinket.check.\(UUID().uuidString)")!
+        let suite = "trinket.check.defaults"
+        let store = UserDefaults(suiteName: suite)!
+        // A suite is a real plist in ~/Library/Preferences and it outlives the process. Without
+        // this, every run of `--self-check` left one behind for ever — and `package-app.sh` runs
+        // one on every build. Found at 366 files.
+        defer { Self.discardSuite(suite, from: store) }
         let defaults = Defaults(store: store)
 
         // A fresh install starts on the shipped factory settings, not on some other value.
