@@ -38,9 +38,15 @@ scrub removes them whether you look at the map or not.
 
 ## Watch it work
 
-https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.mp4
+<video src="https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.mp4"
+       poster="https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.jpg"
+       controls muted loop playsinline width="820"></video>
 
-A mixed archive opened, planned, renamed and run — one minute, no narration.
+A mixed archive opened, planned, renamed and run — one minute, no narration, nothing sped up.
+
+<sup>If your Markdown viewer will not play it inline:
+[download the clip](https://github.com/smrazar/trinket/raw/main/docs/img/trinket-demo.mp4) ·
+[watch it on the site](https://smrazar.github.io/trinket/#features)</sup>
 
 ---
 
