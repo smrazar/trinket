@@ -2,6 +2,10 @@
   <img src="docs/img/icon.png" alt="" width="128" height="128">
 </p>
 
+<p align="center">
+  <img src="docs/shots/about.png" alt="trinket's About window" width="376">
+</p>
+
 <h1 align="center">trinket</h1>
 
 <p align="center">
